@@ -12,20 +12,22 @@ Online retail customer dataset including attributes such as age, gender, annual 
 - Checked and handled missing values
 - Converted categorical variables (Gender, Promotion_Response) into dummy/indicator variables
 - Scaled numeric features using StandardScaler
-- Split data into 80% training / 20% testing sets
+- Split data into 80% training / 20% testing sets (fixed `random_state` for reproducibility)
 - Trained a Linear Regression model to predict `Total_Spend`
 - Evaluated performance using MAE, RMSE, and R²
-- Interpreted feature coefficients to identify key spending drivers
+- Checked correlations between individual features and `Total_Spend` to diagnose model performance
+- Interpreted feature coefficients to identify patterns, despite the model's weak fit
 
 ## Results
-- **R²:** ~0.05 — the model explains a modest share of the variance in spend, indicating spend is influenced by factors beyond what's captured in this dataset
-- **MAE / RMSE:** used to quantify average prediction error in dollar terms
+- **R²: -0.005** — the model performs no better than simply predicting the average spend for every customer. It explains essentially none of the variance in `Total_Spend`.
+- **MAE / RMSE:** ~2,388 / ~2,799 — the average prediction error is large relative to the spend range in the data.
+- A correlation check confirmed why: every individual feature has a near-zero correlation with `Total_Spend` (the strongest, `Years_as_Customer`, is only 0.085). This indicates the dataset itself carries little to no linear signal relating these attributes to spend, rather than a flaw in the modelling approach.
 
 ## Key Insight
-Customer loyalty (`Years_as_Customer`) and purchase frequency (`Num_of_Purchases`) show the strongest positive relationship with total spend, while satisfaction score has surprisingly little effect — suggesting spend is driven more by engagement history than sentiment.
+No feature shows a meaningful relationship with `Total_Spend` — correlations across the board are close to zero, and this holds for both numeric features (e.g. `Years_as_Customer`, `Num_of_Purchases`) and categorical ones (e.g. `Gender`, `Promotion_Response`, `Churned`). This suggests either that spend in this dataset isn't meaningfully driven by these attributes, or that the underlying relationship (if any) is non-linear. A useful next step would be testing non-linear models (e.g. Random Forest, Gradient Boosting) to check whether they can extract any signal a linear model can't.
 
 ## Tools & Libraries
 Python, pandas, scikit-learn, matplotlib
 
 ## Notebook
-Open `Customer_Spend_Prediction.ipynb` directly on GitHub to view the full code, outputs, and visualisations.
+Open `Customer_Total_Spend_Prediction.ipynb` directly on GitHub to view the full code, outputs, and visualisations.
